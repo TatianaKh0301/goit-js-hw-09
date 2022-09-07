@@ -11,7 +11,7 @@ const refs = {
   dataSecs: document.querySelector('.value[data-seconds]'),
 };
 decorClockFace();
-
+refs.startBtn.setAttribute("disabled", "disabled");
 refs.startBtn.addEventListener('click', () => {
   timer.start();
 });
@@ -23,12 +23,18 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     timer.stop();
-    console.log("selectedDates", selectedDates[0]);
-    futureDate = selectedDates[0].getTime();
     refs.dataDays.textContent = '00';  
     refs.dataHours.textContent = '00';
     refs.dataMins.textContent = '00';
     refs.dataSecs.textContent = '00';
+    console.log("selectedDates", selectedDates[0]);
+    const checkTime = Date.now();
+    futureDate = selectedDates[0].getTime();
+    if (futureDate === 0 || (futureDate - checkTime) < 0) {
+      alert('Please choose a date in the future');
+    } else {
+      refs.startBtn.removeAttribute("disabled", "disabled");
+    }
   },
 };
 
@@ -36,26 +42,19 @@ const timer = {
   intervalId: null,
   isActive: false,
   start() {
-  
     if (this.isActive) {
       return;
     }
-    
-    const startTime = futureDate;
-    const checkTime = Date.now();
-    if (startTime === 0 || (startTime - checkTime) < 0) {
-      alert('Please select a date in the future');
-    } else {
-      decorClockFace();
-      this.isActive = true;
-      this.intervalId = setInterval(() => {
-        const currentTime = Date.now();
-        const deltaTime = startTime - currentTime;
-        console.log("deltaTime", deltaTime);
-        const time = getTimeComponents(deltaTime);
-        updateClockFace(time);
-      }, 1000);
-    }    
+        
+    decorClockFace();
+    this.isActive = true;
+    this.intervalId = setInterval(() => {
+      const currentTime = Date.now();
+      const deltaTime = futureDate - currentTime;
+      console.log("deltaTime", deltaTime);
+      const time = getTimeComponents(deltaTime);
+      updateClockFace(time);
+    }, 1000);
   },
   
   stop() {
