@@ -22,7 +22,7 @@ refs.form.addEventListener('submit', onCreatePromisesBtn);
 
 function onFormInput(e) {
   formData[e.target.name] = e.target.value;
-  console.log("formData", formData);
+  // console.log("formData", formData);
 }
 
 function onCreatePromisesBtn(e) {
